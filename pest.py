@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
 import os
 import numpy as np
 import streamlit as st
@@ -11,13 +5,15 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from deep_translator import GoogleTranslator
 
-# ✅ Path to your model (Make sure this is correct)
-model_path = "/Users/amartyajethmalani/Desktop/pest_classification_model.keras"
+# ✅ Define the correct path to your model (Update if necessary)
+model_path = "pest_classification_model.keras"
 
+# ✅ Check if model exists, else show error
 if not os.path.exists(model_path):
     st.error(f"🚨 Model file not found: {model_path}")
     st.stop()
 
+# ✅ Load the trained model
 try:
     model = tf.keras.models.load_model(model_path)
 except Exception as e:
@@ -44,7 +40,7 @@ treatments = {
     "Whitefly": "Apply neem oil or introduce predatory insects."
 }
 
-# ✅ Streamlit Web App
+# ✅ Streamlit Web App UI
 st.set_page_config(page_title="Pest Identification", layout="centered")
 st.title("🌱 Pest Detection for Farmers 🌾")
 
@@ -56,12 +52,12 @@ language_map = {"English": "en", "Hindi": "hi", "Marathi": "mr"}
 if uploaded_file:
     st.image(uploaded_file, caption="📷 Uploaded Image", use_column_width=True)
     
-    # ✅ Save file temporarily
+    # ✅ Save uploaded image temporarily
     temp_path = "temp_image.jpg"
     with open(temp_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    # ✅ Process image
+    # ✅ Preprocess the image for model prediction
     img = load_img(temp_path, target_size=(224, 224))
     img_array = img_to_array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
@@ -77,18 +73,9 @@ if uploaded_file:
         treatments.get(pest_name, "No treatment information available.")
     )
 
-    # ✅ Display results
+    # ✅ Display prediction results
     st.success(f"🐛 **Pest Identified:** {pest_name_translated}")
     st.info(f"💡 **Recommended Treatment:** {treatment_translated}")
-
-
-# In[4]:
-
-
-jupyter nbconvert --to script pest.ipynb
-
-
-# In[ ]:
 
 
 
